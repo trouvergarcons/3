@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POLA Ultimate 100-Question Campus Quiz</title>
+    <style>
+        /* Modern Reset & Theme Variables */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        /* Animated Dynamic Quiz Background */
+        
+        body {
+            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #311b92, #0284c7);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        /* Floating Background Decorative Circles */
+        
+        .bg-bubbles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .bg-bubbles li {
+            position: absolute;
+            list-style: none;
+            display: block;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.08);
+            bottom: -160px;
+            border-radius: 50%;
+            animation: square 20s infinite linear;
+        }
+        
+        .bg-bubbles li:nth-child(1) {
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+        }
+        
+        .bg-bubbles li:nth-child(2) {
+            left: 20%;
+            width: 40px;
+            height: 40px;
+            animation-delay: 2s;
+            animation-duration: 17s;
+        }
+        
+        .bg-bubbles li:nth-child(3) {
+            left: 25%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 4s;
+        }
+        
+        .bg-bubbles li:nth-child(4) {
+            left: 40%;
+            width: 120px;
+            height: 120px;
+            animation-delay: 0s;
+            animation-duration: 22s;
+        }
+        
+        .bg-bubbles li:nth-child(5) {
+            left: 70%;
+            width: 90px;
+            height: 90px;
+            animation-delay: 1s;
+        }
+        
+        .bg-bubbles li:nth-child(6) {
+            left: 85%;
+            width: 100px;
+            height: 100px;
+            animation-delay: 3s;
+        }
+        
+        @keyframes square {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        /* Main Glassmorphism Quiz Card */
+        
+        .quiz-card {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 700px;
+            padding: 35px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 10;
+        }
+        
+        h1,
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #38bdf8;
+            text-shadow: 0 2px 10px rgba(56, 189, 248, 0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #cbd5e1;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+        /* Form Controls */
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #475569;
+            background-color: #0f172a;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            border-color: #38bdf8;
+        }
+        /* Buttons */
+        
+        .btn-main {
+            width: 100%;
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+        
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(22, 163, 74, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            margin-top: 12px;
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.4);
+        }
+        /* Progress Bar */
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background-color: #334155;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            transition: width 0.3s ease;
+        }
+        /* Question & Options */
+        
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+        
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option-btn {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            color: #f1f5f9;
+            padding: 14px;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .option-btn:hover {
+            border-color: #38bdf8;
+            background-color: #1e293b;
+        }
+        
+        .option-btn.selected {
+            border-color: #38bdf8;
+            background-color: #0284c7;
+            color: white;
+        }
+        /* Score & Results Screen */
+        
+        .result-box {
+            text-align: center;
+            padding: 10px 0;
+        }
+        
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #16a34a, #0d9488);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 0 25px rgba(22, 163, 74, 0.4);
+        }
+        
+        .score-number {
+            font-size: 2.4rem;
+            font-weight: 800;
+        }
+        
+        .score-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        /* Detailed Answer Review Styles */
+        
+        .review-list {
+            margin-top: 25px;
+            text-align: left;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .review-item {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+        }
+        
+        .review-item.correct-border {
+            border-left: 5px solid #22c55e;
+        }
+        
+        .review-item.incorrect-border {
+            border-left: 5px solid #ef4444;
+        }
+        
+        .review-q-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .review-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .badge-correct {
+            background-color: #22c55e;
+            color: white;
+        }
+        
+        .badge-incorrect {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .ans-text {
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+        
+        .text-green {
+            color: #4ade80;
+            font-weight: 600;
+        }
+        
+        .text-red {
+            color: #f87171;
+            font-weight: 600;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Animated Floating Circles Background -->
+    <ul class="bg-bubbles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+
+    <div class="quiz-card">
+
+        <!-- 1. USER DETAILS FORM SCREEN -->
+        <div id="userFormScreen">
+            <h1>POLA Ultimate Quiz Challenge</h1>
+            <p class="subtitle">Enter your details to take a 20-question mixed test (Polity, History, Geography, Maths & Science).</p>
+            <form onsubmit="startQuiz(event)">
+                <div class="form-group">
+                    <label for="userName">Full Name</label>
+                    <input type="text" id="userName" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="userRoll">Roll Number / Hostel Room</label>
+                    <input type="text" id="userRoll" placeholder="e.g., 23341021 or Yamuna Hostel" required>
+                </div>
+                <button type="submit" class="btn-main">Start Quiz Now</button>
+            </form>
+        </div>
+
+        <!-- 2. QUIZ QUESTIONS SCREEN -->
+        <div id="quizScreen" class="hidden">
+            <div class="progress-header">
+                <span>Question <strong id="currentQuestionNum">1</strong> of 20</span>
+                <span id="displayStudentName">Student</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressBarFill"></div>
+            </div>
+
+            <div class="question-text" id="questionText">Loading Question...</div>
+
+            <div class="options-grid" id="optionsContainer">
+                <!-- Dynamic Options Inject Here -->
+            </div>
+
+            <button id="nextBtn" class="btn-main" onclick="nextQuestion()" style="margin-top:25px;" disabled>Next Question</button>
+        </div>
+
+        <!-- 3. FINAL RESULTS SCREEN -->
+        <div id="resultScreen" class="hidden">
+            <div class="result-box">
+                <h2>Quiz Completed!</h2>
+                <p class="subtitle">Great effort, <strong id="resultName">User</strong> (<span id="resultRoll">Details</span>)!</p>
+
+                <div class="score-circle">
+                    <div class="score-number" id="finalScore">0/20</div>
+                    <div class="score-label">Final Score</div>
+                </div>
+
+                <p id="resultMessage" style="color:#cbd5e1; margin-bottom:15px;"></p>
+
+                <!-- View Detailed Answer Score Breakdown Button -->
+                <button class="btn-main btn-secondary" id="viewAnswersBtn" onclick="toggleReview()">View Answers Review</button>
+                <button class="btn-main" onclick="resetQuiz()">Retake Quiz (New Questions)</button>
+
+                <!-- Answer Review Section -->
+                <div id="reviewContainer" class="review-list hidden">
+                    <!-- Dynamic Breakdown List -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 100-QUESTION DATABASE (Polity, History, Geography, Maths, Science & Tech)
+        const mainQuestionPool = [
+            // --- POLITY (1-18) ---
+            {
+                question: "Who is known as the Chief Architect of the Indian Constitution?",
+                options: ["Mahatma Gandhi", "Dr. B.R. Ambedkar", "Jawaharlal Nehru", "Sardar Patel"],
+                answer: 1
+            }, {
+                question: "What is the minimum age required to become the President of India?",
+                options: ["25 years", "30 years", "35 years", "40 years"],
+                answer: 2
+            }, {
+                question: "Which Article of the Indian Constitution guarantees the Right to Equality?",
+                options: ["Article 12-13", "Article 14-18", "Article 19-22", "Article 23-24"],
+                answer: 1
+            }, {
+                question: "How many Fundamental Rights are currently provided in the Indian Constitution?",
+                options: ["5", "6", "7", "8"],
+                answer: 1
+            }, {
+                question: "Who appoints the Chief Justice of India?",
+                options: ["The Prime Minister", "The President of India", "The Parliament", "The Law Minister"],
+                answer: 1
+            }, {
+                question: "Which house of the Indian Parliament is called the Upper House?",
+                options: ["Lok Sabha", "Rajya Sabha", "Vidhan Sabha", "Central Cabinet"],
+                answer: 1
+            }, {
+                question: "What is the tenure of a member of the Rajya Sabha?",
+                options: ["4 years", "5 years", "6 years", "7 years"],
+                answer: 2
+            }, {
+                question: "Which schedule of the Indian Constitution deals with official languages?",
+                options: ["7th Schedule", "8th Schedule", "9th Schedule", "10th Schedule"],
+                answer: 1
+            }, {
+                question: "Who acts as the ex-officio Chairman of the Rajya Sabha?",
+                options: ["The President", "The Vice-President", "The Speaker", "The Prime Minister"],
+                answer: 1
+            }, {
+                question: "The concept of 'Directive Principles of State Policy' was borrowed from which country?",
+                options: ["USA", "UK", "Ireland", "Canada"],
+                answer: 2
+            }, {
+                question: "Which Amendment is known as the 'Mini Constitution' of India?",
+                options: ["42nd Amendment", "44th Amendment", "73rd Amendment", "86th Amendment"],
+                answer: 0
+            }, {
+                question: "Who is the Constitutional Head of a State in India?",
+                options: ["Chief Minister", "Governor", "High Court Chief Justice", "Speaker"],
+                answer: 1
+            }, {
+                question: "What is the maximum strength of the Lok Sabha allowed by the Constitution?",
+                options: ["545", "550", "552", "560"],
+                answer: 1
+            }, {
+                question: "Which Constitutional Amendment made Right to Education a Fundamental Right?",
+                options: ["44th", "73rd", "86th", "91st"],
+                answer: 2
+            }, {
+                question: "How long can a financial emergency remain enforced in India?",
+                options: ["6 months", "1 year", "3 years", "No maximum period fixed"],
+                answer: 3
+            }, {
+                question: "Who administers the oath of office to the Prime Minister of India?",
+                options: ["Chief Justice of India", "President of India", "Speaker of Lok Sabha", "Vice President"],
+                answer: 1
+            }, {
+                question: "Panchayati Raj was first introduced in which Indian state?",
+                options: ["Rajasthan", "Andhra Pradesh", "Uttar Pradesh", "Gujarat"],
+                answer: 0
+            }, {
+                question: "Which article allows the President to declare a National Emergency?",
+                options: ["Article 352", "Article 356", "Article 360", "Article 370"],
+                answer: 0
+            },
+
+            // --- HISTORY (19-36) ---
+            {
+                question: "In which year did the Quit India Movement start?",
+                options: ["1920", "1930", "1942", "1947"],
+                answer: 2
+            }, {
+                question: "Who was the first Governor-General of independent India?",
+                options: ["Lord Mountbatten", "C. Rajagopalachari", "Lord Wavell", "Dr. Rajendra Prasad"],
+                answer: 0
+            }, {
+                question: "The Battle of Plassey was fought in which year?",
+                options: ["1556", "1757", "1764", "1857"],
+                answer: 1
+            }, {
+                question: "Who founded the Maurya Empire?",
+                options: ["Ashoka", "Chandragupta Maurya", "Bindusara", "Harsha"],
+                answer: 1
+            }, {
+                question: "Who was popularly known as 'Netaji'?",
+                options: ["Subhash Chandra Bose", "Lala Lajpat Rai", "Bal Gangadhar Tilak", "Bipin Chandra Pal"],
+                answer: 0
+            }, {
+                question: "In which year was the Indus Valley Civilization discovered?",
+                options: ["1905", "1921", "1935", "1942"],
+                answer: 1
+            }, {
+                question: "Who built the famous Taj Mahal?",
+                options: ["Akbar", "Jahangir", "Shah Jahan", "Aurangzeb"],
+                answer: 2
+            }, {
+                question: "Who led the Salt March (Dandi March) in 1930?",
+                options: ["Mahatma Gandhi", "Jawaharlal Nehru", "Sardar Patel", "Bhagat Singh"],
+                answer: 0
+            }, {
+                question: "In which year did the Revolt of 1857 begin?",
+                options: ["1850", "1857", "1865", "1905"],
+                answer: 1
+            }, {
+                question: "Who was the first emperor of the Mughal Empire?",
+                options: ["Babur", "Humayun", "Akbar", "Shah Jahan"],
+                answer: 0
+            }, {
+                question: "The famous slogan 'Swaraj is my birthright and I shall have it' was given by?",
+                options: ["Bal Gangadhar Tilak", "Mahatma Gandhi", "Bhagat Singh", "Gopal Krishna Gokhale"],
+                answer: 0
+            }, {
+                question: "Which ruler was known as the 'Napoleon of India'?",
+                options: ["Chandragupta I", "Samudragupta", "Ashoka", "Harshavardhana"],
+                answer: 1
+            }, {
+                question: "Who was the founder of the Brahmo Samaj?",
+                options: ["Swami Vivekananda", "Raja Ram Mohan Roy", "Dayananda Saraswati", "Ishwar Chandra Vidyasagar"],
+                answer: 1
+            }, {
+                question: "The Jallianwala Bagh massacre took place in which city?",
+                options: ["Lahore", "Amritsar", "Delhi", "Jalandhar"],
+                answer: 1
+            }, {
+                question: "Who was the first woman Prime Minister of India?",
+                options: ["Sarojini Naidu", "Indira Gandhi", "Pratibha Patil", "Sucheta Kripalani"],
+                answer: 1
+            }, {
+                question: "In which year did Vasco da Gama arrive in Calicut, India?",
+                options: ["1492", "1498", "1505", "1526"],
+                answer: 1
+            }, {
+                question: "Who established the Arya Samaj in 1875?",
+                options: ["Raja Ram Mohan Roy", "Swami Dayananda Saraswati", "Swami Vivekananda", "Annie Besant"],
+                answer: 1
+            }, {
+                question: "Which ancient university was destroyed by Bakhtiyar Khilji?",
+                options: ["Taxila", "Nalanda", "Vikramashila", "Valabhi"],
+                answer: 1
+            },
+
+            // --- GEOGRAPHY (37-54) ---
+            {
+                question: "Which is the longest river in India?",
+                options: ["Godavari", "Ganga", "Yamuna", "Brahmaputra"],
+                answer: 1
+            }, {
+                question: "Which line passes near the middle of India?",
+                options: ["Equator", "Tropic of Cancer", "Tropic of Capricorn", "Prime Meridian"],
+                answer: 1
+            }, {
+                question: "Which is the highest mountain peak in India?",
+                options: ["Mount Everest", "Kanchenjunga", "K2 (Godwin Austen)", "Nanda Devi"],
+                answer: 2
+            }, {
+                question: "Which state in India has the longest coastline?",
+                options: ["Tamil Nadu", "Maharashtra", "Gujarat", "Kerala"],
+                answer: 2
+            }, {
+                question: "Which desert is located in Rajasthan, India?",
+                options: ["Gobi Desert", "Thar Desert", "Atacama Desert", "Kalahari Desert"],
+                answer: 1
+            }, {
+                question: "Which Indian city is known as the 'Silicon Valley of India'?",
+                options: ["Hyderabad", "Pune", "Bengaluru", "Chennai"],
+                answer: 2
+            }, {
+                question: "What is the capital of Australia?",
+                options: ["Sydney", "Melbourne", "Canberra", "Perth"],
+                answer: 2
+            }, {
+                question: "Which ocean is the deepest in the world?",
+                options: ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean", "Arctic Ocean"],
+                answer: 2
+            }, {
+                question: "Which continent is known as the 'Dark Continent'?",
+                options: ["Asia", "Africa", "South America", "Australia"],
+                answer: 1
+            }, {
+                question: "The Strait of Malacca connects which two water bodies?",
+                options: ["Andaman Sea & South China Sea", "Red Sea & Mediterranean Sea", "Persian Gulf & Arabian Sea", "Black Sea & Baltic Sea"],
+                answer: 0
+            }, {
+                question: "Which state in India is known as the 'Land of Five Rivers'?",
+                options: ["Haryana", "Punjab", "Uttar Pradesh", "Himachal Pradesh"],
+                answer: 1
+            }, {
+                question: "Which layer of Earth's atmosphere contains the Ozone Layer?",
+                options: ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"],
+                answer: 1
+            }, {
+                question: "Which river is known as the 'Sorrow of Bengal'?",
+                options: ["Damodar River", "Kosi River", "Hooghly River", "Ganga River"],
+                answer: 0
+            }, {
+                question: "Which is the smallest state in India by area?",
+                options: ["Sikkim", "Goa", "Tripura", "Mizoram"],
+                answer: 1
+            }, {
+                question: "Lake Baikal, the deepest freshwater lake, is located in which country?",
+                options: ["Canada", "USA", "Russia", "China"],
+                answer: 2
+            }, {
+                question: "Which mountain range separates Europe from Asia?",
+                options: ["The Alps", "The Andes", "The Ural Mountains", "The Rockies"],
+                answer: 2
+            }, {
+                question: "Which Indian state shares borders with 3 countries (Nepal, Bhutan, China)?",
+                options: ["Arunachal Pradesh", "Sikkim", "West Bengal", "Assam"],
+                answer: 1
+            }, {
+                question: "Pondicherry is situated on the coast of which water body?",
+                options: ["Arabian Sea", "Bay of Bengal", "Indian Ocean", "Laccadive Sea"],
+                answer: 1
+            },
+
+            // --- MATHEMATICS (55-72) ---
+            {
+                question: "What is the value of Pi (π) rounded to two decimal places?",
+                options: ["3.12", "3.14", "3.16", "3.18"],
+                answer: 1
+            }, {
+                question: "If a triangle has sides of length 3, 4, and 5, what type of triangle is it?",
+                options: ["Equilateral", "Isosceles", "Right-angled", "Obtuse"],
+                answer: 2
+            }, {
+                question: "What is the value of 2 to the power of 8 (2^8)?",
+                options: ["128", "256", "512", "1024"],
+                answer: 1
+            }, {
+                question: "What is the prime factorization of 36?",
+                options: ["2 x 3 x 6", "2^2 x 3^2", "4 x 9", "2^3 x 3"],
+                answer: 1
+            }, {
+                question: "Solve: 15% of 200 equals?",
+                options: ["20", "25", "30", "35"],
+                answer: 2
+            }, {
+                question: "What is the sum of interior angles of a quadrilateral?",
+                options: ["180°", "270°", "360°", "540°"],
+                answer: 2
+            }, {
+                question: "If a car travels at 60 km/h for 2.5 hours, how far does it go?",
+                options: ["120 km", "140 km", "150 km", "180 km"],
+                answer: 2
+            }, {
+                question: "What is the square root of 625?",
+                options: ["15", "25", "35", "45"],
+                answer: 1
+            }, {
+                question: "What is the smallest positive odd composite number?",
+                options: ["3", "5", "7", "9"],
+                answer: 3
+            }, {
+                question: "If x + 5 = 12, what is the value of x?",
+                options: ["5", "6", "7", "8"],
+                answer: 2
+            }, {
+                question: "What is the formula for the area of a circle?",
+                options: ["2πr", "πr^2", "πd", "4πr^2"],
+                answer: 1
+            }, {
+                question: "Evaluate: 8 + 2 x 5?",
+                options: ["50", "18", "26", "40"],
+                answer: 1
+            }, {
+                question: "How many faces does a cube have?",
+                options: ["4", "6", "8", "12"],
+                answer: 1
+            }, {
+                question: "What is the LCM of 4 and 6?",
+                options: ["12", "16", "24", "8"],
+                answer: 0
+            }, {
+                question: "What is the average of 10, 20, and 30?",
+                options: ["15", "20", "25", "30"],
+                answer: 1
+            }, {
+                question: "If a discount of 20% is given on an item priced at ₹500, what is the selling price?",
+                options: ["₹350", "₹400", "₹420", "₹450"],
+                answer: 1
+            }, {
+                question: "What is the derivative of x^2 with respect to x?",
+                options: ["x", "2x", "2", "x^3"],
+                answer: 1
+            }, {
+                question: "How many lines can pass through two distinct given points?",
+                options: ["Only 1", "2", "Infinite", "Zero"],
+                answer: 0
+            },
+
+            // --- SCIENCE & TECH (73-100) ---
+            {
+                question: "What is the capital city of France?",
+                options: ["Berlin", "Madrid", "Paris", "Rome"],
+                answer: 2
+            }, {
+                question: "Which chemical element has the symbol 'O'?",
+                options: ["Gold", "Oxygen", "Osmium", "Zinc"],
+                answer: 1
+            }, {
+                question: "How many sides does a heptagon have?",
+                options: ["6", "7", "8", "9"],
+                answer: 1
+            }, {
+                question: "Which planet is known as the Red Planet?",
+                options: ["Venus", "Mars", "Jupiter", "Saturn"],
+                answer: 1
+            }, {
+                question: "Who painted the Mona Lisa?",
+                options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Claude Monet"],
+                answer: 2
+            }, {
+                question: "Which gas do plants absorb from the atmosphere for photosynthesis?",
+                options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"],
+                answer: 2
+            }, {
+                question: "In computing, what does CPU stand for?",
+                options: ["Central Processing Unit", "Computer Power Unit", "Central Program Utility", "Control Processor Engine"],
+                answer: 0
+            }, {
+                question: "What is the hardest natural substance on Earth?",
+                options: ["Gold", "Iron", "Diamond", "Quartz"],
+                answer: 2
+            }, {
+                question: "Who is known as the father of modern Computer Science?",
+                options: ["Alan Turing", "Charles Babbage", "Bill Gates", "Steve Jobs"],
+                answer: 0
+            }, {
+                question: "What is the boiling point of pure water at sea level?",
+                options: ["90°C", "100°C", "110°C", "120°C"],
+                answer: 1
+            }, {
+                question: "Which device is used to measure electrical current?",
+                options: ["Voltmeter", "Ammeter", "Thermometer", "Barometer"],
+                answer: 1
+            }, {
+                question: "Which language is primarily used for styling web pages?",
+                options: ["HTML", "Python", "CSS", "C++"],
+                answer: 2
+            }, {
+                question: "How many bits are in a single byte?",
+                options: ["4", "8", "16", "32"],
+                answer: 1
+            }, {
+                question: "Which planet is closest to the Sun?",
+                options: ["Earth", "Venus", "Mercury", "Mars"],
+                answer: 2
+            }, {
+                question: "What is the main component of natural gas?",
+                options: ["Ethane", "Methane", "Propane", "Butane"],
+                answer: 1
+            }, {
+                question: "What does HTML stand for?",
+                options: ["Hyper Text Markup Language", "High Text Machine Language", "Hyperlink Text Multi Language", "Home Tool Markup Language"],
+                answer: 0
+            }, {
+                question: "Which organ in the human body pumps blood?",
+                options: ["Lungs", "Brain", "Liver", "Heart"],
+                answer: 3
+            }, {
+                question: "What is the approximate speed of light?",
+                options: ["300,000 km/s", "150,000 km/s", "1,000,000 km/s", "30,000 km/s"],
+                answer: 0
+            }, {
+                question: "Which gas makes up the majority of Earth's atmosphere?",
+                options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Argon"],
+                answer: 2
+            }, {
+                question: "Which protocol is used for secure web browsing?",
+                options: ["HTTP", "HTTPS", "FTP", "SMTP"],
+                answer: 1
+            }, {
+                question: "In HTML, which tag is used for creating a hyper-link?",
+                options: ["<link>", "<a>", "<href>", "<url>"],
+                answer: 1
+            }, {
+                question: "What is the powerhouse of the cell?",
+                options: ["Nucleus", "Ribosome", "Mitochondria", "Cell Membrane"],
+                answer: 2
+            }, {
+                question: "Who invented the light bulb?",
+                options: ["Nikola Tesla", "Thomas Edison", "Benjamin Franklin", "Alexander Graham Bell"],
+                answer: 1
+            }, {
+                question: "Which metal is liquid at room temperature?",
+                options: ["Iron", "Copper", "Mercury", "Silver"],
+                answer: 2
+            }, {
+                question: "Which company developed the Android operating system?",
+                options: ["Apple", "Microsoft", "Android Inc. / Google", "IBM"],
+                answer: 2
+            }, {
+                question: "What is the chemical formula for water?",
+                options: ["CO2", "H2O", "NaCl", "O2"],
+                answer: 1
+            }, {
+                question: "How many bones are in an adult human body?",
+                options: ["180", "206", "250", "300"],
+                answer: 1
+            }, {
+                question: "In web development, JavaScript is primarily used for?",
+                options: ["Styling", "Database Storage", "Interactivity & Logic", "Server Hosting"],
+                answer: 2
+            }
+        ];
+
+        // State Variables
+        let activeQuestions = [];
+        let userAnswers = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedOptionIndex = null;
+        let userData = {
+            name: "",
+            roll: ""
+        };
+
+        // Helper: Shuffle Array (Fisher-Yates)
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // 1. START QUIZ
+        function startQuiz(e) {
+            e.preventDefault();
+
+            userData.name = document.getElementById("userName").value.trim();
+            userData.roll = document.getElementById("userRoll").value.trim();
+
+            // Shuffle 100 questions and pick top 20
+            activeQuestions = shuffleArray(mainQuestionPool).slice(0, 20);
+            userAnswers = new Array(20).fill(null);
+
+            currentQuestionIndex = 0;
+            score = 0;
+
+            document.getElementById("userFormScreen").classList.add("hidden");
+            document.getElementById("quizScreen").classList.remove("hidden");
+            document.getElementById("displayStudentName").innerText = userData.name;
+
+            loadQuestion();
+        }
+
+        // 2. LOAD QUESTION
+        function loadQuestion() {
+            selectedOptionIndex = null;
+            const nextBtn = document.getElementById("nextBtn");
+            nextBtn.disabled = true;
+            nextBtn.innerText = (currentQuestionIndex === 19) ? "Submit Quiz" : "Next Question";
+
+            const currentQ = activeQuestions[currentQuestionIndex];
+
+            document.getElementById("currentQuestionNum").innerText = currentQuestionIndex + 1;
+            const progressPercent = (currentQuestionIndex / 20) * 100;
+            document.getElementById("progressBarFill").style.width = `${progressPercent}%`;
+
+            document.getElementById("questionText").innerText = `${currentQuestionIndex + 1}. ${currentQ.question}`;
+
+            const optionsContainer = document.getElementById("optionsContainer");
+            optionsContainer.innerHTML = "";
+
+            currentQ.options.forEach((optText, idx) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = optText;
+                btn.onclick = () => selectOption(idx, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        // 3. SELECT OPTION
+        function selectOption(index, element) {
+            selectedOptionIndex = index;
+
+            const allOptions = document.querySelectorAll(".option-btn");
+            allOptions.forEach(btn => btn.classList.remove("selected"));
+
+            element.classList.add("selected");
+            document.getElementById("nextBtn").disabled = false;
+        }
+
+        // 4. NEXT QUESTION
+        function nextQuestion() {
+            if (selectedOptionIndex === null) return;
+
+            userAnswers[currentQuestionIndex] = selectedOptionIndex;
+
+            if (selectedOptionIndex === activeQuestions[currentQuestionIndex].answer) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < 20) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // 5. SHOW RESULTS
+        function showResults() {
+            document.getElementById("quizScreen").classList.add("hidden");
+            document.getElementById("resultScreen").classList.remove("hidden");
+
+            document.getElementById("resultName").innerText = userData.name;
+            document.getElementById("resultRoll").innerText = userData.roll;
+            document.getElementById("finalScore").innerText = `${score}/20`;
+
+            const percentage = (score / 20) * 100;
+            document.getElementById("resultMessage").innerText = `You scored ${percentage}% on this attempt! Click below to review your answers.`;
+
+            buildReviewList();
+        }
+
+        // 6. BUILD DETAILED ANSWER REVIEW
+        function buildReviewList() {
+            const reviewContainer = document.getElementById("reviewContainer");
+            reviewContainer.innerHTML = "";
+
+            activeQuestions.forEach((q, idx) => {
+                        const userChoiceIdx = userAnswers[idx];
+                        const isCorrect = (userChoiceIdx === q.answer);
+
+                        const item = document.createElement("div");
+                        item.className = `review-item ${isCorrect ? 'correct-border' : 'incorrect-border'}`;
+
+                        const badgeClass = isCorrect ? 'badge-correct' : 'badge-incorrect';
+                        const badgeText = isCorrect ? 'Correct' : 'Incorrect';
+
+                        const userText = userChoiceIdx !== null ? q.options[userChoiceIdx] : "Not Answered";
+                        const correctText = q.options[q.answer];
+
+                        item.innerHTML = `
+                    <span class="review-badge ${badgeClass}">${badgeText}</span>
+                    <div class="review-q-title">${idx + 1}. ${q.question}</div>
+                    <div class="ans-text">Your Answer: <span class="${isCorrect ? 'text-green' : 'text-red'}">${userText}</span></div>
+                    ${!isCorrect ? `<div class="ans-text">Correct Answer: <span class="text-green">${correctText}</span></div>` : ''}
+                `;
+
+                reviewContainer.appendChild(item);
+            });
+        }
+
+        // TOGGLE REVIEW LIST VISIBILITY
+        function toggleReview() {
+            const reviewContainer = document.getElementById("reviewContainer");
+            const btn = document.getElementById("viewAnswersBtn");
+            if (reviewContainer.classList.contains("hidden")) {
+                reviewContainer.classList.remove("hidden");
+                btn.innerText = "Hide Answers Review";
+            } else {
+                reviewContainer.classList.add("hidden");
+                btn.innerText = "View Answers Review";
+            }
+        }
+
+        // RESET QUIZ
+        function resetQuiz() {
+            document.getElementById("resultScreen").classList.add("hidden");
+            document.getElementById("reviewContainer").classList.add("hidden");
+            document.getElementById("userFormScreen").classList.remove("hidden");
+            document.getElementById("userName").value = "";
+            document.getElementById("userRoll").value = "";
+        }
+    </script>
+</body>
+
+</html>
