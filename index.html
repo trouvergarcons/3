@@ -6,15 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POLA Ultimate 100-Question Campus Quiz</title>
     <style>
-        /* Modern Reset & Theme Variables */
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        /* Animated Dynamic Quiz Background */
         
         body {
             background: linear-gradient(-45deg, #0f172a, #1e1b4b, #311b92, #0284c7);
@@ -120,7 +117,6 @@
                 opacity: 0;
             }
         }
-        /* Main Glassmorphism Quiz Card */
         
         .quiz-card {
             background: rgba(30, 41, 59, 0.85);
@@ -198,6 +194,13 @@
             box-shadow: 0 6px 15px rgba(22, 163, 74, 0.4);
         }
         
+        .btn-main:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
         .btn-secondary {
             background: linear-gradient(135deg, #0284c7, #0369a1);
             margin-top: 12px;
@@ -206,7 +209,7 @@
         .btn-secondary:hover {
             box-shadow: 0 6px 15px rgba(2, 132, 199, 0.4);
         }
-        /* Progress Bar */
+        /* Progress Bar & Header */
         
         .progress-header {
             display: flex;
@@ -215,6 +218,40 @@
             margin-bottom: 12px;
             font-size: 0.9rem;
             color: #94a3b8;
+        }
+        /* 15-second Timer Badge Styles */
+        
+        .timer-badge {
+            background-color: #0f172a;
+            border: 1px solid #38bdf8;
+            color: #38bdf8;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .timer-badge.warning {
+            border-color: #ef4444;
+            color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.15);
+            animation: pulse 0.8s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.08);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
         
         .progress-bar-container {
@@ -257,19 +294,33 @@
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.2s ease;
+            position: relative;
         }
         
-        .option-btn:hover {
+        .option-btn:hover:not(.disabled) {
             border-color: #38bdf8;
             background-color: #1e293b;
         }
         
-        .option-btn.selected {
-            border-color: #38bdf8;
-            background-color: #0284c7;
-            color: white;
+        .option-btn.correct {
+            background-color: #15803d !important;
+            border-color: #22c55e !important;
+            color: white !important;
+            font-weight: 700;
         }
-        /* Score & Results Screen */
+        
+        .option-btn.incorrect {
+            background-color: #b91c1c !important;
+            border-color: #ef4444 !important;
+            color: white !important;
+            font-weight: 700;
+        }
+        
+        .option-btn.disabled {
+            pointer-events: none;
+            opacity: 0.9;
+        }
+        /* Results Screen */
         
         .result-box {
             text-align: center;
@@ -299,7 +350,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        /* Detailed Answer Review Styles */
+        /* Answer Review Styles */
         
         .review-list {
             margin-top: 25px;
@@ -407,6 +458,7 @@
         <div id="quizScreen" class="hidden">
             <div class="progress-header">
                 <span>Question <strong id="currentQuestionNum">1</strong> of 20</span>
+                <span class="timer-badge" id="timerDisplay">⏱️ 15s</span>
                 <span id="displayStudentName">Student</span>
             </div>
             <div class="progress-bar-container">
@@ -873,6 +925,9 @@
         let currentQuestionIndex = 0;
         let score = 0;
         let selectedOptionIndex = null;
+        let isAnswered = false;
+        let timerInterval = null;
+        let timeLeft = 15;
         let userData = {
             name: "",
             roll: ""
@@ -909,9 +964,51 @@
             loadQuestion();
         }
 
+        // TIMER ENGINE: 15 seconds per question
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 15;
+            const timerEl = document.getElementById("timerDisplay");
+            timerEl.innerText = `⏱️ ${timeLeft}s`;
+            timerEl.classList.remove("warning");
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.innerText = `⏱️ ${timeLeft}s`;
+
+                if (timeLeft <= 5) {
+                    timerEl.classList.add("warning");
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        // Timeout handler when time reaches 0
+        function handleTimeOut() {
+            isAnswered = true;
+            const currentQ = activeQuestions[currentQuestionIndex];
+            const allOptions = document.querySelectorAll(".option-btn");
+
+            allOptions.forEach((btn, idx) => {
+                btn.classList.add("disabled");
+                if (idx === currentQ.answer) {
+                    btn.classList.add("correct");
+                }
+            });
+
+            userAnswers[currentQuestionIndex] = null; // Unanswered due to timeout
+            document.getElementById("nextBtn").disabled = false;
+        }
+
         // 2. LOAD QUESTION
         function loadQuestion() {
             selectedOptionIndex = null;
+            isAnswered = false;
+
             const nextBtn = document.getElementById("nextBtn");
             nextBtn.disabled = true;
             nextBtn.innerText = (currentQuestionIndex === 19) ? "Submit Quiz" : "Next Question";
@@ -934,29 +1031,43 @@
                 btn.onclick = () => selectOption(idx, btn);
                 optionsContainer.appendChild(btn);
             });
+
+            startTimer();
         }
 
-        // 3. SELECT OPTION
+        // 3. SELECT OPTION & SHOW INSTANT FEEDBACK
         function selectOption(index, element) {
+            if (isAnswered) return; // Prevent changing answer
+            isAnswered = true;
+
+            clearInterval(timerInterval); // Stop timer on selection
+
             selectedOptionIndex = index;
+            userAnswers[currentQuestionIndex] = index;
 
+            const currentQ = activeQuestions[currentQuestionIndex];
             const allOptions = document.querySelectorAll(".option-btn");
-            allOptions.forEach(btn => btn.classList.remove("selected"));
 
-            element.classList.add("selected");
+            // Disable all option buttons and highlight correct/incorrect
+            allOptions.forEach((btn, idx) => {
+                btn.classList.add("disabled");
+                if (idx === currentQ.answer) {
+                    btn.classList.add("correct"); // Highlight correct answer in green
+                }
+            });
+
+            if (index !== currentQ.answer) {
+                element.classList.add("incorrect"); // Highlight user's wrong answer in red
+            } else {
+                score++;
+            }
+
             document.getElementById("nextBtn").disabled = false;
         }
 
         // 4. NEXT QUESTION
         function nextQuestion() {
-            if (selectedOptionIndex === null) return;
-
-            userAnswers[currentQuestionIndex] = selectedOptionIndex;
-
-            if (selectedOptionIndex === activeQuestions[currentQuestionIndex].answer) {
-                score++;
-            }
-
+            clearInterval(timerInterval);
             currentQuestionIndex++;
 
             if (currentQuestionIndex < 20) {
@@ -968,6 +1079,7 @@
 
         // 5. SHOW RESULTS
         function showResults() {
+            clearInterval(timerInterval);
             document.getElementById("quizScreen").classList.add("hidden");
             document.getElementById("resultScreen").classList.remove("hidden");
 
@@ -996,7 +1108,7 @@
                         const badgeClass = isCorrect ? 'badge-correct' : 'badge-incorrect';
                         const badgeText = isCorrect ? 'Correct' : 'Incorrect';
 
-                        const userText = userChoiceIdx !== null ? q.options[userChoiceIdx] : "Not Answered";
+                        const userText = userChoiceIdx !== null ? q.options[userChoiceIdx] : "Not Answered (Timed Out)";
                         const correctText = q.options[q.answer];
 
                         item.innerHTML = `
@@ -1025,6 +1137,7 @@
 
         // RESET QUIZ
         function resetQuiz() {
+            clearInterval(timerInterval);
             document.getElementById("resultScreen").classList.add("hidden");
             document.getElementById("reviewContainer").classList.add("hidden");
             document.getElementById("userFormScreen").classList.remove("hidden");
